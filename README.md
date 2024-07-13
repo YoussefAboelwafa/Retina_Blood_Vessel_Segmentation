@@ -49,7 +49,7 @@ generating a high-quality segmentation map with accurate boundaries. </b>
 ### Output:
 - The final layer of the U-Net decoder typically has several filters equal to the number of classes, producing an output feature map for each class.
 - The final layer of the U-Net can be a 1x1 convolution to map the feature maps to the desired number of output classes for segmentation.
-- If there are C classes, the output will be of shape (H*W*C).
+- If there are C classes, the output will be of shape (H * W * C).
 - Interpolation methods like bilinear or nearest-neighbor interpolation can be used at the final layer to adjust the output dimensions to match the input. This ensures that each pixel in the input image has a corresponding label in the output segmentation map.
 - The softmax function is applied to each pixel location across all the channels
 
