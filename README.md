@@ -43,7 +43,9 @@ generating a high-quality segmentation map with accurate boundaries. </b>
 - Cropping is used in U-Net skip connections primarily due to the following reasons:
   - <b>Size Mismatch:</b> ensures that the sizes are compatible for concatenation.
   - <b>Aligning the central regions:</b> which contain more reliable information.
- 
+
+<hr>
+
 ### Output:
 - The final layer of the U-Net decoder typically has several filters equal to the number of classes, producing an output feature map for each class.
 - The final layer of the U-Net can be a 1x1 convolution to map the feature maps to the desired number of output classes for segmentation.
