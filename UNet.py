@@ -59,9 +59,4 @@ class UNet(nn.Module):
         x = self.dec4(x)
 
         x = self.out(x)
-
-
-model = UNet(3, 1)
-input_image = torch.randn(1, 3, 512, 512)
-output = model(input_image)
-print(type(model))
+        return x
