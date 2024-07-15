@@ -2,7 +2,7 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
 import torchvision.transforms.functional as TF
-00
+
 
 class RetinaDataset(Dataset):
     def __init__(self, images, masks, transform=None):
