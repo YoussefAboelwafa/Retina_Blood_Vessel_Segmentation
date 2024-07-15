@@ -1,4 +1,5 @@
 # ***Retina Blood Vessel Segmentation***
+
 ## Dataset
 This dataset contains a comprehensive collection of retinal fundus images, meticulously annotated for blood vessel segmentation. Accurate segmentation of blood vessels is a critical task in ophthalmology as it aids in the early detection and management of various retinal pathologies, such as diabetic retinopathy & glaucoma. <br>
 The dataset comprises a total of 100 high-resolution retinal fundus images captured using state-of-the-art imaging equipment. Each image comes with corresponding pixel-level ground truth annotations indicating the exact location of blood vessels. These annotations facilitate the development and evaluation of advanced segmentation algorithms.
@@ -63,3 +64,6 @@ generating a high-quality segmentation map with accurate boundaries. </b>
 - The softmax function is applied to each pixel location across all the channels
 
 <hr>
+
+## PyTorch Model
+
