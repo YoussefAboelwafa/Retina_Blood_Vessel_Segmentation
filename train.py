@@ -8,8 +8,6 @@ import json
 
 warnings.filterwarnings("ignore")
 
-H = 512
-W = 512
 BATCH_SIZE = 4
 EPOCHS = 50
 LR = 1e-4
