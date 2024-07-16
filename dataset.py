@@ -2,13 +2,14 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 import cv2 as cv
+from PIL import Image
 
 
 class RetinaDataset(Dataset):
-    def __init__(self, images, masks, transform=None):
+    def __init__(self, images, masks, augment=None):
         self.images = images
         self.masks = masks
-        self.transform = transform
+        self.augment = augment
 
     def __len__(self):
         return len(self.images)
@@ -22,13 +23,9 @@ class RetinaDataset(Dataset):
         image_tensor = torch.from_numpy(image)
 
         mask = cv.imread(self.masks[idx], cv.IMREAD_GRAYSCALE)
-        mask = mask / 255.0
+        mask[mask > 0] = 1
         mask = mask.astype(np.float32)
         mask_tensor = torch.from_numpy(mask)
         mask_tensor = mask_tensor.unsqueeze(0)
-
-        if self.transform:
-            image_tensor = self.transform(image_tensor)
-            mask_tensor = self.transform(mask_tensor)
 
         return image_tensor, mask_tensor
