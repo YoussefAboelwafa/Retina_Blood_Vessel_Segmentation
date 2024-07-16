@@ -103,8 +103,8 @@ for epoch in range(EPOCHS):
 
     if epoch_val_loss < best_loss:
         best_loss = epoch_val_loss
-        torch.save(model.state_dict(), "check.pth")
+        torch.save(model.state_dict(), CHECKPOINT_PATH)
         print(f"Checkpoint saved at epoch {epoch+1} with loss {best_loss:.4f}")
 
-with open("metric.json", "w") as f:
+with open(METRICS_PATH, "w") as f:
     json.dump(metrics, f)
