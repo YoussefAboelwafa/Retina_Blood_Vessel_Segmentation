@@ -10,6 +10,7 @@ from tqdm import tqdm
 import json
 from comet_ml import Experiment
 from comet_ml.integration.pytorch import log_model
+import numpy as np
 
 warnings.filterwarnings("ignore")
 
@@ -28,12 +29,21 @@ METRICS_PATH = (
     "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/metrics/metrics.json"
 )
 
+experiment = Experiment(
+    api_key="rwyMmTQC0QDIH0oF5XaSzgmh4",
+    project_name="retina-blood-vessel-segmentation",
+    workspace="youssefaboelwafa",
+)
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 train_images, train_masks, test_images, test_masks = load_data(BASE_DIRECTORY)
 
 train_dataset = RetinaDataset(train_images, train_masks, augment=True)
 
+# Overfitting to a small subset of the data
+subset_indices = np.random.choice(len(train_dataset), 8, replace=False)
+train_dataset = Subset(train_dataset, subset_indices)
 
 model = UNet(in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
@@ -120,9 +130,6 @@ for fold, (train_ids, val_ids) in enumerate(kfold.split(train_dataset)):
                     pred, mask, mode="binary", threshold=0.5
                 )
                 iou_score = smp.metrics.iou_score(
-                    tp, fp, fn, tn, reduction="micro"
-                ).item()
-                dice_score = smp.metrics.dice_score(
                     tp, fp, fn, tn, reduction="micro"
                 ).item()
                 val_loss.append(loss.item())
