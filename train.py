@@ -5,10 +5,8 @@ from torch.utils.data import DataLoader
 from utils import load_data
 import warnings
 import segmentation_models_pytorch as smp
-from tqdm import tqdm
 import json
 from comet_ml import Experiment
-from comet_ml.integration.pytorch import log_model
 
 warnings.filterwarnings("ignore")
 
@@ -17,7 +15,7 @@ LR = 0.0001
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
 BASE_DIRECTORY = "dataset"
-BATCH_SIZE = 4
+BATCH_SIZE = 16
 
 CHECKPOINT_PATH = (
     "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint.pth"
@@ -44,7 +42,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 criterion = smp.losses.DiceLoss(mode="binary")
 
 
-best_val_loss = float("inf")
+best_iou = float("-inf")
 
 train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
@@ -82,13 +80,12 @@ for epoch in range(EPOCHS):
             f"IOU: {sum(train_iou_score)/len(train_iou_score):.4f}, ",
             flush=True,
         )
-
-    metrics["train_loss"].append(sum(train_loss) / len(train_loss))
-    experiment.log_metric("train_loss", sum(train_loss) / len(train_loss), step=epoch)
-    metrics["train_iou_score"].append(sum(train_iou_score) / len(train_iou_score))
-    experiment.log_metric(
-        "train_iou_score", sum(train_iou_score) / len(train_iou_score), step=epoch
-    )
+    epoch_train_loss = sum(train_loss) / len(train_loss)
+    metrics["train_loss"].append(epoch_train_loss)
+    experiment.log_metric("train_loss", epoch_train_loss, step=epoch)
+    epoch_train_iou_score = sum(train_iou_score) / len(train_iou_score)
+    metrics["train_iou_score"].append(epoch_train_iou_score)
+    experiment.log_metric("train_iou_score", epoch_train_iou_score, step=epoch)
 
     model.eval()
     val_loss = []
@@ -118,21 +115,20 @@ for epoch in range(EPOCHS):
     epoch_val_loss = sum(val_loss) / len(val_loss)
     metrics["val_loss"].append(epoch_val_loss)
     experiment.log_metric("val_loss", epoch_val_loss, step=epoch)
-    metrics["val_iou_score"].append(sum(val_iou_score) / len(val_iou_score))
-    experiment.log_metric(
-        "val_iou_score", sum(val_iou_score) / len(val_iou_score), step=epoch
-    )
+    epoch_iou_score = sum(val_iou_score) / len(val_iou_score)
+    metrics["val_iou_score"].append(epoch_iou_score)
+    experiment.log_metric("val_iou_score", epoch_iou_score, step=epoch)
 
     results[epoch + 1] = {
         "val_loss": epoch_val_loss,
-        "val_iou_score": sum(val_iou_score) / len(val_iou_score),
+        "val_iou_score": epoch_iou_score,
     }
 
-    if epoch_val_loss < best_val_loss:
-        best_val_loss = epoch_val_loss
+    if epoch_iou_score > best_iou:
+        best_iou = epoch_iou_score
         torch.save(model.state_dict(), CHECKPOINT_PATH)
         print(
-            f"Checkpoint saved at epoch {epoch+1} with loss {best_val_loss:.4f}",
+            f"Checkpoint saved at epoch {epoch+1} with loss {best_iou:.4f}",
             flush=True,
         )
 
