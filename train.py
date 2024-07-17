@@ -75,15 +75,15 @@ for epoch in range(EPOCHS):
         train_loss.append(loss.item())
         train_iou_score.append(iou_score)
 
-        print(
-            f"Epoch {epoch+1}/{EPOCHS} [Training] Loss: {sum(train_loss)/len(train_loss):.4f}, "
-            f"IOU: {sum(train_iou_score)/len(train_iou_score):.4f}, ",
-            flush=True,
-        )
     epoch_train_loss = sum(train_loss) / len(train_loss)
+    epoch_train_iou_score = sum(train_iou_score) / len(train_iou_score)
+    print(
+        f"Epoch {epoch+1}/{EPOCHS} [Training] Loss: {epoch_train_loss:.4f}, "
+        f"IOU: {epoch_train_iou_score:.4f}, ",
+        flush=True,
+    )
     metrics["train_loss"].append(epoch_train_loss)
     experiment.log_metric("train_loss", epoch_train_loss, step=epoch)
-    epoch_train_iou_score = sum(train_iou_score) / len(train_iou_score)
     metrics["train_iou_score"].append(epoch_train_iou_score)
     experiment.log_metric("train_iou_score", epoch_train_iou_score, step=epoch)
 
@@ -106,16 +106,17 @@ for epoch in range(EPOCHS):
             val_loss.append(loss.item())
             val_iou_score.append(iou_score)
 
-            print(
-                f"Epoch {epoch+1}/{EPOCHS} [Validation] Loss: {sum(val_loss)/len(val_loss):.4f}, "
-                f"IOU: {sum(val_iou_score)/len(val_iou_score):.4f}, ",
-                flush=True,
-            )
-
     epoch_val_loss = sum(val_loss) / len(val_loss)
+    epoch_iou_score = sum(val_iou_score) / len(val_iou_score)
+
+    print(
+        f"Epoch {epoch+1}/{EPOCHS} [Validation] Loss: {sum(val_loss)/len(val_loss):.4f}, "
+        f"IOU: {sum(val_iou_score)/len(val_iou_score):.4f}, ",
+        flush=True,
+    )
+
     metrics["val_loss"].append(epoch_val_loss)
     experiment.log_metric("val_loss", epoch_val_loss, step=epoch)
-    epoch_iou_score = sum(val_iou_score) / len(val_iou_score)
     metrics["val_iou_score"].append(epoch_iou_score)
     experiment.log_metric("val_iou_score", epoch_iou_score, step=epoch)
 
