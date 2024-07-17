@@ -1,4 +1,6 @@
+from comet_ml import Experiment
 import torch
+import torch.nn as nn
 from model import UNet
 from dataset import RetinaDataset
 from torch.utils.data import DataLoader
@@ -6,16 +8,15 @@ from utils import load_data
 import warnings
 import segmentation_models_pytorch as smp
 import json
-from comet_ml import Experiment
 
 warnings.filterwarnings("ignore")
 
 EPOCHS = 100
 LR = 0.0001
+BATCH_SIZE = 4
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
 BASE_DIRECTORY = "dataset"
-BATCH_SIZE = 4
 
 CHECKPOINT_PATH = (
     "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint.pth"
@@ -39,7 +40,7 @@ test_dataset = RetinaDataset(test_images, test_masks, augment=False)
 
 model = UNet(in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
-criterion = smp.losses.DiceLoss(mode="binary")
+criterion = nn.BCEWithLogitsLoss()
 
 
 best_iou = float("-inf")
@@ -132,13 +133,15 @@ for epoch in range(EPOCHS):
             f"Checkpoint saved at epoch {epoch+1} with loss {best_iou:.4f}",
             flush=True,
         )
-
+    print("-" * 50)
 with open(METRICS_PATH, "w") as f:
     json.dump(results, f)
 
 print("-" * 50)
-best_epoch = max(results, key=lambda epoch: results[epoch]['val_iou_score'])
-best_val_iou_score = results[best_epoch]['val_iou_score']
-best_val_loss = results[best_epoch]['val_loss']
+best_epoch = max(results, key=lambda epoch: results[epoch]["val_iou_score"])
+best_val_iou_score = results[best_epoch]["val_iou_score"]
+best_val_loss = results[best_epoch]["val_loss"]
 
-print(f"Best IOU Score: {best_val_iou_score:.4f} with Loss: {best_val_loss:.4f} at Epoch: {best_epoch}")
+print(
+    f"Best IOU Score: {best_val_iou_score:.4f} with Loss: {best_val_loss:.4f} at Epoch: {best_epoch}"
+)
