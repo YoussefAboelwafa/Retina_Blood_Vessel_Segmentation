@@ -1,11 +1,11 @@
-# ***Retina Blood Vessel Segmentation***
+# **_Retina Blood Vessel Segmentation_**
 
 ## Dataset
+
 This dataset contains a comprehensive collection of retinal fundus images, meticulously annotated for blood vessel segmentation. Accurate segmentation of blood vessels is a critical task in ophthalmology as it aids in the early detection and management of various retinal pathologies, such as diabetic retinopathy & glaucoma. <br>
 The dataset comprises a total of 100 high-resolution retinal fundus images captured using state-of-the-art imaging equipment. Each image comes with corresponding pixel-level ground truth annotations indicating the exact location of blood vessels. These annotations facilitate the development and evaluation of advanced segmentation algorithms.
 
 ![__results___47_0](https://github.com/user-attachments/assets/cc20f0ec-7f49-4a05-a108-e46fa25cd3ea)
-
 
 ## U-Net Architecture
 
@@ -13,8 +13,8 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 
 ![image](https://github.com/user-attachments/assets/13771f61-6b66-4423-817e-7bdc143bf64e)
 
-
 ### Main Components:
+
 1. Encoder (contracting path)
 2. Bottleneck
 3. Decoder (expansive path)
@@ -23,29 +23,33 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 <hr>
 
 #### Encoder:
+
 - Extract features from input images.
 - Repeated 3x3 conv (valid conv) + ReLU layers.
 - 2x2 max pooling to downsample (reduce spatial dimensions).
 - Double channels with after the max pooling.
 
 #### Bottleneck:
+
 - Pivotal role in bridging the encoder and decoder.
 - Capture the most abstract and high-level features from the input image.
 - Serves as a feature-rich layer that condenses the spatial dimensions while preserving the semantic information.
 - Enable the decoder to reconstruct the output image with high fidelity.
 - The large number of channels in the bottleneck:
-<b> Balance the loss of spatial information due to down-sampling by enriching
-the feature space. </b>
+  <b> Balance the loss of spatial information due to down-sampling by enriching
+  the feature space. </b>
 
 #### Decoder:
+
 - Repeated 3x3 conv (valid conv) + ReLU layers.
 - Upsample using transpose convolution.
 - Halves channels after transpose convolution.
 - Successive blocks in decoder:
-<b> Series of gradual upsampling operations & gradual refinement helps in
-generating a high-quality segmentation map with accurate boundaries. </b>
+  <b> Series of gradual upsampling operations & gradual refinement helps in
+  generating a high-quality segmentation map with accurate boundaries. </b>
 
 #### Skip Connections:
+
 - Preservation of Spatial Information because during the downsampling process, spatial information can be lost.
 - Combining Low-level and High-level Features.
 - Gradient Flow Improvement.
@@ -57,9 +61,10 @@ generating a high-quality segmentation map with accurate boundaries. </b>
 <hr>
 
 #### Output:
+
 - The final layer of the U-Net decoder typically has several filters equal to the number of classes, producing an output feature map for each class.
 - The final layer of the U-Net can be a 1x1 convolution to map the feature maps to the desired number of output classes for segmentation.
-- If there are C classes, the output will be of shape (H * W * C).
+- If there are C classes, the output will be of shape (H _ W _ C).
 - Interpolation methods like bilinear or nearest-neighbor interpolation can be used at the final layer to adjust the output dimensions to match the input. This ensures that each pixel in the input image has a corresponding label in the output segmentation map.
 - The softmax function is applied to each pixel location across all the channels
 
@@ -127,5 +132,47 @@ class UNet(nn.Module):
 
 <hr>
 
-## PyTorch Model
+## Model Evaluation
+
+### Loss Function:
+
+- The choice of loss function is crucial for training a U-Net model for blood vessel segmentation.
+- The **Binary Cross-Entropy (BCE)** loss is commonly used for binary segmentation tasks, such as blood vessel segmentation.
+- BCE loss is well-suited for pixel-wise classification problems where each pixel is classified as either a blood vessel or background. <br>
+
+```python
+criterion = nn.BCEWithLogitsLoss()
+```
+
+### Evaluation Metrics:
+
+- **IoU (Intersection over Union)**:
+  - Measures the overlap between the predicted segmentation and the ground truth.
+  - IoU is calculated as the ratio of the intersection area to the union area of the predicted and ground truth segmentation masks.
+  - A higher IoU indicates better segmentation accuracy.
+
+```python
+tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5)
+iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro").item()
+```
+
+## Hyperparameters:
+
+The best hyperparameters for my training after multiple experiments are:
+
+- **Learning Rate**: 0.0001
+- **Optimizer**: Adam
+- **Batch Size**: 4
+- **Epochs**: 200
+
+<br>
+
+At epoch **190** the model has the best performance with: <br>
+
+- **IoU score = 0.6783** <br>
+- **validation loss = 0.1251** <br>
+
+The model is saved to disk for future use.
+
+## Inference:
 
