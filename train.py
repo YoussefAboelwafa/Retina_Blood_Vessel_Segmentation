@@ -7,13 +7,12 @@ from torch.utils.data import DataLoader
 from utils import load_data
 import warnings
 import segmentation_models_pytorch as smp
-import json
 from datetime import datetime
 
 warnings.filterwarnings("ignore")
 
 EPOCHS = 200
-LR = 0.00005
+LR = 0.0001
 BATCH_SIZE = 4
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
