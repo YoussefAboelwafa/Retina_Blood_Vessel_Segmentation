@@ -5,6 +5,7 @@ from model import UNet
 from dataset import RetinaDataset
 from torch.utils.data import DataLoader
 from utils import load_data
+from torch.utils.data import random_split
 import warnings
 import segmentation_models_pytorch as smp
 from datetime import datetime
@@ -32,8 +33,9 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 train_images, train_masks, test_images, test_masks = load_data(BASE_DIRECTORY)
 
-train_dataset = RetinaDataset(train_images, train_masks, augment=True)
-test_dataset = RetinaDataset(test_images, test_masks, augment=False)
+dataset = RetinaDataset(train_images, train_masks, augment=True)
+train_dataset, val_dataset = random_split(dataset, [60, 20])
+
 
 model = UNet(in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
@@ -42,7 +44,7 @@ criterion = nn.BCEWithLogitsLoss()
 best_iou = float("-inf")
 
 train_dataloader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-val_dataloader = DataLoader(test_dataset, batch_size=BATCH_SIZE, shuffle=False)
+val_dataloader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 
 metrics = {
     "train_loss": [],
@@ -75,7 +77,7 @@ for epoch in range(EPOCHS):
     epoch_train_loss = sum(train_loss) / len(train_loss)
     epoch_train_iou_score = sum(train_iou_score) / len(train_iou_score)
     print(
-        f"Epoch {epoch+1}/{EPOCHS} [Training] Loss: {epoch_train_loss:.4f}, "
+        f"Epoch {epoch+1}/{EPOCHS} [Training]   Loss: {epoch_train_loss:.4f}, "
         f"IOU: {epoch_train_iou_score:.4f}, ",
         flush=True,
     )
@@ -128,7 +130,7 @@ for epoch in range(EPOCHS):
         checkpoint_path_with_time = f"{CHECKPOINT_PATH}_{timestamp}.pth"
         torch.save(model.state_dict(), checkpoint_path_with_time)
         print(
-            f"Checkpoint saved at epoch {epoch+1} with loss {best_iou:.4f}",
+            f"Checkpoint saved at epoch {epoch+1} with IOU {best_iou:.4f}",
             flush=True,
         )
     print("-" * 50)
