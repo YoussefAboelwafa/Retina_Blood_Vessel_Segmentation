@@ -15,7 +15,7 @@ LR = 0.0001
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
 BASE_DIRECTORY = "dataset"
-BATCH_SIZE = 16
+BATCH_SIZE = 4
 
 CHECKPOINT_PATH = (
     "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint.pth"
@@ -135,3 +135,10 @@ for epoch in range(EPOCHS):
 
 with open(METRICS_PATH, "w") as f:
     json.dump(results, f)
+
+print("-" * 50)
+best_epoch = max(results, key=lambda epoch: results[epoch]['val_iou_score'])
+best_val_iou_score = results[best_epoch]['val_iou_score']
+best_val_loss = results[best_epoch]['val_loss']
+
+print(f"Best IOU Score: {best_val_iou_score:.4f} with Loss: {best_val_loss:.4f} at Epoch: {best_epoch}")
