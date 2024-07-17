@@ -79,13 +79,17 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 - The **Binary Cross-Entropy (BCE)** loss is commonly used for binary segmentation tasks, such as blood vessel segmentation.
 - BCE loss is well-suited for pixel-wise classification problems where each pixel is classified as either a blood vessel or background. <br>
 
+![image](https://github.com/user-attachments/assets/5f08346b-1443-47ae-8aba-5fe5bcd60518)
 
-### Evaluation Metrics:
+
+### Evaluation Metric:
 
 - **IoU (Intersection over Union)**:
   - Measures the overlap between the predicted segmentation and the ground truth.
   - IoU is calculated as the ratio of the intersection area to the union area of the predicted and ground truth segmentation masks.
   - A higher IoU indicates better segmentation accuracy.
+
+![image](https://github.com/user-attachments/assets/c58534ef-7a32-4feb-b958-6e4cc9c56e61)
 
 
 ## Hyperparameters:
@@ -107,4 +111,9 @@ At epoch **190** the model has the best performance with: <br>
 The model is saved to disk for future use.
 
 ## Inference:
+![Untitled4](https://github.com/user-attachments/assets/179ea631-3a8b-46ea-b467-b8bae28b776d)
+![Untitled3](https://github.com/user-attachments/assets/fa951288-3c9d-4b24-b922-d3cb4c1f5d4d)
+![Untitled2](https://github.com/user-attachments/assets/f4742673-ed59-468e-a429-e4bdc127ad69)
+![Untitled1](https://github.com/user-attachments/assets/330c41a1-14b7-4a83-ab05-0f191da1eb33)
+![Untitled](https://github.com/user-attachments/assets/eda69ed1-4a41-474c-894e-9aa0c97e0027)
 
