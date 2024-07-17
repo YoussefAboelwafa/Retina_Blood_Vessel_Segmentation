@@ -8,21 +8,19 @@ from utils import load_data
 import warnings
 import segmentation_models_pytorch as smp
 import json
+from datetime import datetime
 
 warnings.filterwarnings("ignore")
 
-EPOCHS = 100
-LR = 0.0001
+EPOCHS = 200
+LR = 0.00005
 BATCH_SIZE = 4
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
 BASE_DIRECTORY = "dataset"
 
 CHECKPOINT_PATH = (
-    "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint.pth"
-)
-METRICS_PATH = (
-    "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/metrics/metrics.json"
+    "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint"
 )
 
 experiment = Experiment(
@@ -41,7 +39,6 @@ test_dataset = RetinaDataset(test_images, test_masks, augment=False)
 model = UNet(in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 criterion = nn.BCEWithLogitsLoss()
-
 
 best_iou = float("-inf")
 
@@ -128,14 +125,14 @@ for epoch in range(EPOCHS):
 
     if epoch_iou_score > best_iou:
         best_iou = epoch_iou_score
-        torch.save(model.state_dict(), CHECKPOINT_PATH)
+        timestamp = datetime.now().strftime("%d_%m_%H_%M_%S")
+        checkpoint_path_with_time = f"{CHECKPOINT_PATH}_{timestamp}.pth"
+        torch.save(model.state_dict(), checkpoint_path_with_time)
         print(
             f"Checkpoint saved at epoch {epoch+1} with loss {best_iou:.4f}",
             flush=True,
         )
     print("-" * 50)
-with open(METRICS_PATH, "w") as f:
-    json.dump(results, f)
 
 print("-" * 50)
 best_epoch = max(results, key=lambda epoch: results[epoch]["val_iou_score"])
@@ -145,3 +142,6 @@ best_val_loss = results[best_epoch]["val_loss"]
 print(
     f"Best IOU Score: {best_val_iou_score:.4f} with Loss: {best_val_loss:.4f} at Epoch: {best_epoch}"
 )
+print("Checkpoint path: ", checkpoint_path_with_time)
+print("Batch size: ", BATCH_SIZE)
+print("Learning rate: ", LR)
