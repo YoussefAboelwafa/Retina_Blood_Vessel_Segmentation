@@ -16,8 +16,8 @@ class RetinaDataset(Dataset):
                     A.HorizontalFlip(p=0.5),
                     A.VerticalFlip(p=0.5),
                     A.Rotate(limit=30, p=0.5),
-                    A.Sharpen(alpha=(0.5, 0.9), lightness=(0.5, 1.0), p=1.0),
-                    A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=1.0),
+                    A.Sharpen(alpha=(0.5, 0.9), lightness=(0.5, 1.0), p=0.3),
+                    A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=0.3),
                 ]
             )
         else:
