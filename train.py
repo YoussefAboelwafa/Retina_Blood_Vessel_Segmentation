@@ -21,7 +21,6 @@ parser.add_argument("--job_id", type=int)
 
 args = parser.parse_args()
 
-
 EPOCHS = args.e
 LR = args.lr
 BATCH_SIZE = args.b
