@@ -128,9 +128,8 @@ At epoch **373** the model has the best performance with: <br>
 The model is saved to disk for future use.
 
 ## Inference:
-![Untitled4](https://github.com/user-attachments/assets/179ea631-3a8b-46ea-b467-b8bae28b776d)
-![Untitled3](https://github.com/user-attachments/assets/fa951288-3c9d-4b24-b922-d3cb4c1f5d4d)
-![Untitled2](https://github.com/user-attachments/assets/f4742673-ed59-468e-a429-e4bdc127ad69)
-![Untitled1](https://github.com/user-attachments/assets/330c41a1-14b7-4a83-ab05-0f191da1eb33)
-![Untitled](https://github.com/user-attachments/assets/eda69ed1-4a41-474c-894e-9aa0c97e0027)
-
+![1](https://github.com/user-attachments/assets/cf49f201-b058-4191-b80f-4edda96a07f7)
+![2](https://github.com/user-attachments/assets/4e3f2c6f-0d2a-42f0-a556-7565f89f59fb)
+![3](https://github.com/user-attachments/assets/1093f603-22d1-4784-adb0-ebca61d5fdfe)
+![4](https://github.com/user-attachments/assets/7b0369ae-a97b-4ab3-9591-8029663fa616)
+![5](https://github.com/user-attachments/assets/f85cae09-4a8a-4d07-9a90-d85c35833354)
