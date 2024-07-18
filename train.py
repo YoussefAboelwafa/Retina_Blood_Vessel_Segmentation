@@ -9,14 +9,26 @@ from torch.utils.data import random_split
 import warnings
 import segmentation_models_pytorch as smp
 from datetime import datetime
+import argparse
 
 warnings.filterwarnings("ignore")
 
-EPOCHS = 300
-LR = 0.0001
-BATCH_SIZE = 4
+parser = argparse.ArgumentParser()
+parser.add_argument("--e", type=int, default=200)
+parser.add_argument("--lr", type=float, default=0.0001)
+parser.add_argument("--b", type=int, default=4)
+parser.add_argument("--job_id", type=int)
+
+args = parser.parse_args()
+
+
+EPOCHS = args.epochs
+LR = args.lr
+BATCH_SIZE = args.batch_size
+
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
+
 BASE_DIRECTORY = "dataset"
 
 CHECKPOINT_PATH = (
@@ -29,7 +41,7 @@ experiment = Experiment(
     workspace="youssefaboelwafa",
 )
 
-experiment.set_name("UNet")
+experiment.set_name(str(args.job_id))
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -136,14 +148,14 @@ for epoch in range(EPOCHS):
 
     if epoch_iou_score > best_iou:
         best_iou = epoch_iou_score
-        timestamp = datetime.now().strftime("%d_%m_%H_%M_%S")
-        checkpoint_path_with_time = f"{CHECKPOINT_PATH}_{timestamp}.pth"
-        
+
+        checkpoint_path_with_job_id = f"{CHECKPOINT_PATH}_{str(args.job_id)}.pth"
+
         if torch.cuda.device_count() > 1:
-            torch.save(model.module.state_dict(), checkpoint_path_with_time)
+            torch.save(model.module.state_dict(), checkpoint_path_with_job_id)
         else:
-            torch.save(model.state_dict(), checkpoint_path_with_time)
-        
+            torch.save(model.state_dict(), checkpoint_path_with_job_id)
+
         print(
             f"Checkpoint saved at epoch {epoch+1} with IOU {best_iou:.4f}",
             flush=True,
@@ -151,6 +163,7 @@ for epoch in range(EPOCHS):
     print("-" * 50)
 
 print("-" * 50)
+
 best_epoch = max(results, key=lambda epoch: results[epoch]["val_iou_score"])
 best_val_iou_score = results[best_epoch]["val_iou_score"]
 best_val_loss = results[best_epoch]["val_loss"]
@@ -160,6 +173,6 @@ print("Time taken: ", datetime.now() - start_time)
 print(
     f"Best IOU Score: {best_val_iou_score:.4f} with Loss: {best_val_loss:.4f} at Epoch: {best_epoch}"
 )
-print("Checkpoint path: ", checkpoint_path_with_time)
+print("Checkpoint path: ", checkpoint_path_with_job_id)
 print("Batch size: ", BATCH_SIZE)
 print("Learning rate: ", LR)

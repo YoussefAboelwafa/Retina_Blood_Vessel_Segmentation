@@ -6,15 +6,15 @@ from dataset import RetinaDataset
 from model import UNet
 import segmentation_models_pytorch as smp
 
+EXP_ID = 17931
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 BASE_DIRECTORY = "dataset"
-CHECKPOINT_PATH = "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_17_07_18_48_11.pth"
-
+MODEL_PATH = f'/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_{EXP_ID}.pth'
 
 model = UNet(in_channels=3, out_channels=1).to(device)
-model.load_state_dict(torch.load(CHECKPOINT_PATH))
+model.load_state_dict(torch.load(MODEL_PATH))
 criterion = nn.BCEWithLogitsLoss()
 model.eval()
 
