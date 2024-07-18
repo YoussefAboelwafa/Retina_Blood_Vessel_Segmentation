@@ -1,5 +1,13 @@
 # **_Retina Blood Vessel Segmentation_**
 
+## Description
+- The project involves using a dataset of 100 high-resolution retinal fundus images for blood vessel segmentation to aid in early detection of retinal pathologies.
+- Implemented **U-Net architecture** from scratch, known for its efficiency in semantic segmentation with limited data.
+- Hyperparameter tuning is applied using **parallelism with multiple GPUs to efficiently handle the computational demands.
+- The final model achieved **72%** IoU score on validation set and **68%** on test set.
+- **Data augmentation** techniques were applied to the training dataset to enhance model robustness and generalization by artificially expanding the diversity of training samples.
+- Going modular with a series of different python scripts for more reproducibility using **pytorch lightning** for a simplified codebase, scalability, and advanced features.
+
 ## Dataset
 
 - This dataset contains a comprehensive collection of retinal fundus images, meticulously annotated for blood vessel segmentation. Accurate segmentation of blood vessels is a critical task in ophthalmology as it aids in the early detection and management of various retinal pathologies, such as diabetic retinopathy & glaucoma.
