@@ -81,8 +81,7 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 - The **Binary Cross-Entropy (BCE)** loss is commonly used for binary segmentation tasks, such as blood vessel segmentation.
 - BCE loss is well-suited for pixel-wise classification problems where each pixel is classified as either a blood vessel or background. <br>
 
-![image](https://github.com/user-attachments/assets/5f08346b-1443-47ae-8aba-5fe5bcd60518)
-
+![image](https://github.com/user-attachments/assets/87862473-cb7f-4891-8a71-62fa850b23cf)
 
 ### Evaluation Metric:
 
@@ -91,10 +90,21 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
   - IoU is calculated as the ratio of the intersection area to the union area of the predicted and ground truth segmentation masks.
   - A higher IoU indicates better segmentation accuracy.
 
-![image](https://github.com/user-attachments/assets/c58534ef-7a32-4feb-b958-6e4cc9c56e61)
-
+![image](https://github.com/user-attachments/assets/a040df1c-10bc-4678-9e42-26c2bc2d61f3)
 
 ## Hyperparameters:
+
+| Job id | epochs | batch_size | learning_rate | val_IoU | val_loss | test_IoU | test_loss |
+| -----: | -----: | ---------: | ------------: | ------: | -------: | -------: | --------: |
+|  17855 |    100 |          4 |         1e-04 |  0.6163 |   0.1475 |        - |         - |
+|  17857 |    100 |         16 |         1e-04 |  0.4087 |   0.2136 |        - |         - |
+|  17931 |    200 |          4 |         1e-04 |  0.6783 |   0.1251 |   0.6779 |     0.125 |
+|  17932 |    200 |          4 |         5e-05 |  0.6466 |   0.1361 |        - |         - |
+|  17939 |    200 |          4 |         1e-04 |  0.6204 |   0.1457 |        - |         - |
+|  17941 |    300 |          4 |         1e-04 |  0.6126 |   0.1551 |        - |         - |
+|  17942 |    300 |          4 |         5e-05 |  0.5701 |   0.1618 |        - |         - |
+|  18049 |    **400** |          **4** |         **1e-04** |  **0.7242** |   **0.0961** |   **0.6827** |    **0.1307** |
+
 
 Experiments link on ![Comet](https://www.comet.com/youssefaboelwafa/retina-blood-vessel-segmentation/view/new/panels)
 
@@ -105,14 +115,14 @@ The best hyperparameters for my training after multiple experiments are:
 - **Learning Rate**: 0.0001
 - **Optimizer**: Adam
 - **Batch Size**: 4
-- **Epochs**: 200
+- **Epochs**: 400
 
 <br>
 
-At epoch **190** the model has the best performance with: <br>
+At epoch **373** the model has the best performance with: <br>
 
-- **IoU score = 0.6783** <br>
-- **validation loss = 0.1251** <br>
+- **IoU score = 0.7242** <br>
+- **validation loss = 0.0961** <br>
 
 The model is saved to disk for future use.
 
