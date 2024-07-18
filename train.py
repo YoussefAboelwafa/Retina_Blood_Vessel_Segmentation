@@ -22,9 +22,9 @@ parser.add_argument("--job_id", type=int)
 args = parser.parse_args()
 
 
-EPOCHS = args.epochs
+EPOCHS = args.e
 LR = args.lr
-BATCH_SIZE = args.batch_size
+BATCH_SIZE = args.b
 
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
