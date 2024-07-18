@@ -14,16 +14,16 @@ import argparse
 warnings.filterwarnings("ignore")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--e", type=int, default=200)
+parser.add_argument("--epochs", type=int, default=200)
 parser.add_argument("--lr", type=float, default=0.0001)
-parser.add_argument("--b", type=int, default=4)
+parser.add_argument("--batch_size", type=int, default=4)
 parser.add_argument("--job_id", type=int)
 
 args = parser.parse_args()
 
-EPOCHS = args.e
+EPOCHS = args.epochs
 LR = args.lr
-BATCH_SIZE = args.b
+BATCH_SIZE = args.batch_size
 
 IN_CHANNELS = 3
 OUT_CHANNELS = 1
@@ -161,7 +161,6 @@ for epoch in range(EPOCHS):
         )
     print("-" * 50)
 
-print("-" * 50)
 
 best_epoch = max(results, key=lambda epoch: results[epoch]["val_iou_score"])
 best_val_iou_score = results[best_epoch]["val_iou_score"]
