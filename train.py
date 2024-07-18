@@ -12,7 +12,7 @@ from datetime import datetime
 
 warnings.filterwarnings("ignore")
 
-EPOCHS = 200
+EPOCHS = 300
 LR = 0.0001
 BATCH_SIZE = 4
 IN_CHANNELS = 3
@@ -37,9 +37,15 @@ dataset = RetinaDataset(train_images, train_masks, augment=True)
 train_dataset, val_dataset = random_split(dataset, [60, 20])
 
 
-model = UNet(in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS).to(device)
+model = UNet(in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
 criterion = nn.BCEWithLogitsLoss()
+
+if torch.cuda.device_count() > 1:
+    print(f"start training using {torch.cuda.device_count()} GPUs")
+    model = torch.nn.DataParallel(model)
+
+model.to(device)
 
 best_iou = float("-inf")
 
@@ -53,6 +59,8 @@ metrics = {
     "val_iou_score": [],
 }
 results = {}
+
+start_time = datetime.now()
 
 for epoch in range(EPOCHS):
     model.train()
@@ -140,6 +148,8 @@ best_epoch = max(results, key=lambda epoch: results[epoch]["val_iou_score"])
 best_val_iou_score = results[best_epoch]["val_iou_score"]
 best_val_loss = results[best_epoch]["val_loss"]
 
+print("Number of GPUs: ", torch.cuda.device_count())
+print("Time taken: ", datetime.now() - start_time)
 print(
     f"Best IOU Score: {best_val_iou_score:.4f} with Loss: {best_val_loss:.4f} at Epoch: {best_epoch}"
 )
