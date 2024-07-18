@@ -29,6 +29,8 @@ experiment = Experiment(
     workspace="youssefaboelwafa",
 )
 
+experiment.set_name("UNet")
+
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 train_images, train_masks, test_images, test_masks = load_data(BASE_DIRECTORY)
