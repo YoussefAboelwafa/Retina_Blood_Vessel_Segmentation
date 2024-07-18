@@ -138,7 +138,12 @@ for epoch in range(EPOCHS):
         best_iou = epoch_iou_score
         timestamp = datetime.now().strftime("%d_%m_%H_%M_%S")
         checkpoint_path_with_time = f"{CHECKPOINT_PATH}_{timestamp}.pth"
-        torch.save(model.state_dict(), checkpoint_path_with_time)
+        
+        if torch.cuda.device_count() > 1:
+            torch.save(model.module.state_dict(), checkpoint_path_with_time)
+        else:
+            torch.save(model.state_dict(), checkpoint_path_with_time)
+        
         print(
             f"Checkpoint saved at epoch {epoch+1} with IOU {best_iou:.4f}",
             flush=True,
