@@ -93,6 +93,7 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 
 
 ## Hyperparameters:
+Number of GPUs used in the training is 4 GPUs
 
 The best hyperparameters for my training after multiple experiments are:
 
