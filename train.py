@@ -32,7 +32,7 @@ OUT_CHANNELS = 1
 BASE_DIRECTORY = "dataset"
 
 CHECKPOINT_PATH = (
-    "/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint"
+    "/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint"
 )
 
 experiment = Experiment(
@@ -98,11 +98,7 @@ for epoch in range(EPOCHS):
 
     epoch_train_loss = sum(train_loss) / len(train_loss)
     epoch_train_iou_score = sum(train_iou_score) / len(train_iou_score)
-    print(
-        f"Epoch {epoch+1}/{EPOCHS} [Training]   Loss: {epoch_train_loss:.4f}, "
-        f"IOU: {epoch_train_iou_score:.4f}, ",
-        flush=True,
-    )
+
     metrics["train_loss"].append(epoch_train_loss)
     experiment.log_metric("train_loss", epoch_train_loss, step=epoch)
     metrics["train_iou_score"].append(epoch_train_iou_score)
@@ -129,12 +125,6 @@ for epoch in range(EPOCHS):
 
     epoch_val_loss = sum(val_loss) / len(val_loss)
     epoch_iou_score = sum(val_iou_score) / len(val_iou_score)
-
-    print(
-        f"Epoch {epoch+1}/{EPOCHS} [Validation] Loss: {sum(val_loss)/len(val_loss):.4f}, "
-        f"IOU: {sum(val_iou_score)/len(val_iou_score):.4f}, ",
-        flush=True,
-    )
 
     metrics["val_loss"].append(epoch_val_loss)
     experiment.log_metric("val_loss", epoch_val_loss, step=epoch)

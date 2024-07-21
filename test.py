@@ -13,7 +13,7 @@ EXP_ID = 18049
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 BASE_DIRECTORY = "dataset"
-MODEL_PATH = f'/scratch/y.aboelwafa/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_{EXP_ID}.pth'
+MODEL_PATH = f'/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_{EXP_ID}.pth'
 
 model = UNet(in_channels=3, out_channels=1).to(device)
 model.load_state_dict(torch.load(MODEL_PATH))
