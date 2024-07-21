@@ -124,20 +124,23 @@ for epoch in range(EPOCHS):
             val_iou_score.append(iou_score)
 
     epoch_val_loss = sum(val_loss) / len(val_loss)
-    epoch_iou_score = sum(val_iou_score) / len(val_iou_score)
+    epoch_val_iou_score = sum(val_iou_score) / len(val_iou_score)
 
     metrics["val_loss"].append(epoch_val_loss)
     experiment.log_metric("val_loss", epoch_val_loss, step=epoch)
-    metrics["val_iou_score"].append(epoch_iou_score)
-    experiment.log_metric("val_iou_score", epoch_iou_score, step=epoch)
+    metrics["val_iou_score"].append(epoch_val_iou_score)
+    experiment.log_metric("val_iou_score", epoch_val_iou_score, step=epoch)
 
     results[epoch + 1] = {
         "val_loss": epoch_val_loss,
-        "val_iou_score": epoch_iou_score,
+        "val_iou_score": epoch_val_iou_score,
     }
 
-    if epoch_iou_score > best_iou:
-        best_iou = epoch_iou_score
+    if epoch % 50 == 0:
+        print(f"Epoch: {epoch} | Loss: {loss:.5f}, IoU: {epoch_val_iou_score:.2f}% | Val loss: {epoch_val_loss:.5f}, Val IoU: {epoch_val_iou_score:.2f}%")
+    
+    if epoch_val_iou_score > best_iou:
+        best_iou = epoch_val_iou_score
 
         checkpoint_path_with_job_id = f"{CHECKPOINT_PATH}_{str(args.job_id)}.pth"
 
@@ -151,6 +154,7 @@ for epoch in range(EPOCHS):
             flush=True,
         )
     print("-" * 50)
+    
 
 
 best_epoch = max(results, key=lambda epoch: results[epoch]["val_iou_score"])
