@@ -112,26 +112,27 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 |  17939 |    200 |          4 |         1e-04 |  0.6204 |   0.1457 |        - |         - |
 |  17941 |    300 |          4 |         1e-04 |  0.6126 |   0.1551 |        - |         - |
 |  17942 |    300 |          4 |         5e-05 |  0.5701 |   0.1618 |        - |         - |
-|  18049 |    **400** |          **4** |         **1e-04** |  **0.7242** |   **0.0961** |   **0.6827** |    **0.1307** |
+|  18049 |    400 |          4 |         1e-04 |  0.7242 |   0.0961 |   0.6827 |    0.1307 |
+|  18439 |    **1000** |          **4** |         **1e-04** |  **0.81229** |   **0.0618** |   **0.6841** |    **0.111** |
 
 
 Experiments link on ![Comet](https://www.comet.com/youssefaboelwafa/retina-blood-vessel-segmentation/view/new/panels)
 
-Number of GPUs used in the training is 4 GPUs
+Number of GPUs used in the training is 2 GPUs
 
 The best hyperparameters for my training after multiple experiments are:
 
 - **Learning Rate**: 0.0001
 - **Optimizer**: Adam
 - **Batch Size**: 4
-- **Epochs**: 400
+- **Epochs**: 1000
 
 <br>
 
-At epoch **373** the model has the best performance with: <br>
+At epoch **959** the model has the best performance with: <br>
 
-- **IoU score = 0.7242** <br>
-- **validation loss = 0.0961** <br>
+- **IoU score = 0.8129** <br>
+- **validation loss = 0.0618** <br>
 
 The model is saved to disk for future use.
 
