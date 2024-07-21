@@ -158,7 +158,7 @@ for epoch in range(EPOCHS):
 
     if epoch % 50 == 0:
         print(
-            f"Epoch: {epoch} | Loss: {loss:.5f}, IoU: {epoch_val_iou_score:.2f}% | Val loss: {epoch_val_loss:.5f}, Val IoU: {epoch_val_iou_score:.2f}%"
+            f"Epoch: {epoch} | Loss: {loss:.4f}, IoU: {epoch_val_iou_score:.4f} | Val loss: {epoch_val_loss:.4f}, Val IoU: {epoch_val_iou_score:.4f}"
         )
         print("-" * 50)
 
