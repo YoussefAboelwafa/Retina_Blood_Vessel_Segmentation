@@ -138,7 +138,8 @@ for epoch in range(EPOCHS):
 
     if epoch % 50 == 0:
         print(f"Epoch: {epoch} | Loss: {loss:.5f}, IoU: {epoch_val_iou_score:.2f}% | Val loss: {epoch_val_loss:.5f}, Val IoU: {epoch_val_iou_score:.2f}%")
-    
+        print("-" * 50)
+        
     if epoch_val_iou_score > best_iou:
         best_iou = epoch_val_iou_score
 
@@ -153,7 +154,7 @@ for epoch in range(EPOCHS):
             f"Checkpoint saved at epoch {epoch+1} with IOU {best_iou:.4f}",
             flush=True,
         )
-    print("-" * 50)
+        print("-" * 50)
     
 
 
