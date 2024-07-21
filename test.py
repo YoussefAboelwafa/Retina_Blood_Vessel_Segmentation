@@ -1,10 +1,12 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from utils import load_data
+from utils import *
 from dataset import RetinaDataset
 from model import UNet
 import segmentation_models_pytorch as smp
+
+set_seed(5)
 
 EXP_ID = 18049
 

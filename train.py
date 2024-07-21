@@ -4,7 +4,7 @@ import torch.nn as nn
 from model import UNet
 from dataset import RetinaDataset
 from torch.utils.data import DataLoader
-from utils import load_data
+from utils import *
 from torch.utils.data import random_split
 import warnings
 import segmentation_models_pytorch as smp
@@ -12,6 +12,7 @@ from datetime import datetime
 import argparse
 
 warnings.filterwarnings("ignore")
+set_seed(5)
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--epochs", type=int, default=200)
