@@ -3,9 +3,10 @@ import torch
 import torch.nn as nn
 from model import UNet
 from dataset import RetinaDataset
+import albumentations as A
 from torch.utils.data import DataLoader
 from utils import *
-from torch.utils.data import random_split
+from sklearn.model_selection import train_test_split
 import warnings
 import segmentation_models_pytorch as smp
 from datetime import datetime
@@ -31,9 +32,7 @@ OUT_CHANNELS = 1
 
 BASE_DIRECTORY = "dataset"
 
-CHECKPOINT_PATH = (
-    "/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint"
-)
+CHECKPOINT_PATH = "/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint"
 
 experiment = Experiment(
     api_key="rwyMmTQC0QDIH0oF5XaSzgmh4",
@@ -45,11 +44,32 @@ experiment.set_name(str(args.job_id))
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-train_images, train_masks, test_images, test_masks = load_data(BASE_DIRECTORY)
+images, masks, _, _ = load_data(BASE_DIRECTORY)
 
-dataset = RetinaDataset(train_images, train_masks, augment=True)
-train_dataset, val_dataset = random_split(dataset, [60, 20])
+train_transform = A.Compose(
+    [
+        A.Resize(512, 512),
+        A.HorizontalFlip(p=0.5),
+        A.VerticalFlip(p=0.5),
+        A.Rotate(limit=30, p=0.5),
+        A.Sharpen(alpha=(0.5, 0.9), lightness=(0.5, 1.0), p=0.3),
+        A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=0.3),
+    ]
+)
 
+test_transform = A.Compose(
+    [
+        A.Resize(512, 512),
+    ]
+)
+
+train_images, val_images, train_masks, val_masks = train_test_split(
+    images, masks, test_size=0.25, random_state=5
+)
+
+
+train_dataset = RetinaDataset(train_images, train_masks, transform=train_transform)
+val_dataset = RetinaDataset(val_images, val_masks, transform=test_transform)
 
 model = UNet(in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
@@ -137,9 +157,11 @@ for epoch in range(EPOCHS):
     }
 
     if epoch % 50 == 0:
-        print(f"Epoch: {epoch} | Loss: {loss:.5f}, IoU: {epoch_val_iou_score:.2f}% | Val loss: {epoch_val_loss:.5f}, Val IoU: {epoch_val_iou_score:.2f}%")
+        print(
+            f"Epoch: {epoch} | Loss: {loss:.5f}, IoU: {epoch_val_iou_score:.2f}% | Val loss: {epoch_val_loss:.5f}, Val IoU: {epoch_val_iou_score:.2f}%"
+        )
         print("-" * 50)
-        
+
     if epoch_val_iou_score > best_iou:
         best_iou = epoch_val_iou_score
 
@@ -155,7 +177,6 @@ for epoch in range(EPOCHS):
             flush=True,
         )
         print("-" * 50)
-    
 
 
 best_epoch = max(results, key=lambda epoch: results[epoch]["val_iou_score"])

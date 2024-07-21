@@ -6,22 +6,11 @@ import albumentations as A
 
 
 class RetinaDataset(Dataset):
-    def __init__(self, images, masks, augment=False):
+    def __init__(self, images, masks, transform=None):
         self.images = images
         self.masks = masks
-        self.augment = augment
-        if augment:
-            self.augmentations = A.Compose(
-                [
-                    A.HorizontalFlip(p=0.5),
-                    A.VerticalFlip(p=0.5),
-                    A.Rotate(limit=30, p=0.5),
-                    A.Sharpen(alpha=(0.5, 0.9), lightness=(0.5, 1.0), p=0.3),
-                    A.Emboss(alpha=(0.1, 0.3), strength=(0.5, 1.0), p=0.3),
-                ]
-            )
-        else:
-            self.augmentations = None
+        self.transform = transform
+        
 
     def __len__(self):
         return len(self.images)
@@ -36,8 +25,8 @@ class RetinaDataset(Dataset):
         mask[mask > 0] = 1
         mask = mask.astype(np.float32)
 
-        if self.augment:
-            augmented = self.augmentations(image=image, mask=mask)
+        if self.transform:
+            augmented = self.transform(image=image, mask=mask)
             image, mask = augmented["image"], augmented["mask"]
 
         image = np.transpose(image, (2, 0, 1))

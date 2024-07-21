@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
+import albumentations as A
 from utils import *
 from dataset import RetinaDataset
 from model import UNet
@@ -13,15 +14,22 @@ EXP_ID = 18439
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 BASE_DIRECTORY = "dataset"
-MODEL_PATH = f'/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_{EXP_ID}.pth'
+MODEL_PATH = f"/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_{EXP_ID}.pth"
 
 model = UNet(in_channels=3, out_channels=1).to(device)
 model.load_state_dict(torch.load(MODEL_PATH))
 criterion = nn.BCEWithLogitsLoss()
 model.eval()
 
-train_images, train_masks, test_images, test_masks = load_data(BASE_DIRECTORY)
-test_dataset = RetinaDataset(test_images, test_masks, augment=False)
+_, _, images, masks = load_data(BASE_DIRECTORY)
+
+test_transform = A.Compose(
+    [
+        A.Resize(512, 512),
+    ]
+)
+
+test_dataset = RetinaDataset(images, masks, transform=test_transform)
 test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
 
 test_loss = []
