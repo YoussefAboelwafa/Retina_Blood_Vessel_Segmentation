@@ -1,11 +1,16 @@
 import torch
 import torch.nn as nn
+import pytorch_lightning as pl
+import segmentation_models_pytorch as smp
 
 
-class UNet(nn.Module):
-    def __init__(self, in_channels, out_channels):
-        super(UNet, self).__init__()
+class LitUnet(pl.LightningModule):
+    def __init__(self, in_channels, out_channels, learning_rate):
+        super(LitUnet, self).__init__()
 
+        self.learning_rate = learning_rate
+        self.criterion = nn.BCEWithLogitsLoss()
+        
         self.enc1 = self.conv_block(in_channels, 64)
         self.enc2 = self.conv_block(64, 128)
         self.enc3 = self.conv_block(128, 256)
@@ -25,6 +30,7 @@ class UNet(nn.Module):
         self.dec4 = self.conv_block(128, 64)
 
         self.out = nn.Conv2d(64, out_channels, kernel_size=1)
+
 
     def conv_block(self, in_channels, out_channels):
         return nn.Sequential(
@@ -60,3 +66,32 @@ class UNet(nn.Module):
 
         x = self.out(x)
         return x
+
+    def common_step(self, batch, batch_idx):
+        image, mask = batch
+        pred = self.forward(image)
+        loss = self.criterion(pred, mask)
+        pred = torch.sigmoid(pred)
+        mask = mask.round().long()
+        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5)
+        iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro").item()
+        return loss, iou_score
+
+    def training_step(self, batch, batch_idx):
+        loss, iou_score = self.common_step(batch, batch_idx)
+        self.log_dict({'train_loss': loss, 'train_iou_score': iou_score})
+        return loss
+    
+    def validation_step(self, batch, batch_idx):
+        loss, iou_score = self.common_step(batch, batch_idx)
+        self.log_dict({'val_loss': loss, 'val_iou_score': iou_score})
+        return loss
+
+    def test_step(self, batch, batch_idx):
+        loss, iou_score = self.common_step(batch, batch_idx)
+        self.log_dict({'test_loss': loss, 'test_iou_score': iou_score})
+        return loss
+
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+
