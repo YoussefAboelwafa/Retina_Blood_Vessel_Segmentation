@@ -62,10 +62,9 @@ class RetinaDataModule(pl.LightningDataModule):
                 val_images, val_masks, transform=self.test_transform
             )
 
-        if stage == "test" or stage is None:
-            self.test_dataset = RetinaDataset(
-                self.test_images, self.test_masks, transform=self.test_transform
-            )
+        self.test_dataset = RetinaDataset(
+            self.test_images, self.test_masks, transform=self.test_transform
+        )
 
     def train_dataloader(self):
         return DataLoader(self.train_dataset, batch_size=self.batch_size, shuffle=True)
