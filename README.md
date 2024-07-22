@@ -6,7 +6,7 @@
 - Hyperparameter tuning is applied using **parallelism with multiple GPUs** to efficiently handle the computational demands.
 - The final model achieved **72%** IoU score on validation set and **68%** on test set.
 - **Data augmentation** techniques were applied to the training dataset to enhance model robustness and generalization by artificially expanding the diversity of training samples.
-- Going modular with a series of different python scripts for more reproducibility, simplified codebase, scalability, and advanced features.
+- Going modular with a series of different python scripts for more reproducibility using pytorch lightning for simplified codebase, scalability, and advanced features.
 
 ## Dataset
 
