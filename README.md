@@ -14,7 +14,7 @@
 The dataset comprises a total of **100** high-resolution retinal fundus images captured using state-of-the-art imaging equipment. Each image comes with corresponding pixel-level ground truth annotations indicating the exact location of blood vessels. These annotations facilitate the development and evaluation of advanced segmentation algorithms.
 - The dataset comprises a total of 100 retinal fundus images divided into **80** train images & **20** test images.
 - The 80 train images are divided into **60** images for training & **20** images for validation.
-- Dataset link on ![Kaggle](https://www.kaggle.com/datasets/abdallahwagih/retina-blood-vessel)
+- Dataset link on [Kaggle](https://www.kaggle.com/datasets/abdallahwagih/retina-blood-vessel)
 
 ![__results___47_0](https://github.com/user-attachments/assets/cc20f0ec-7f49-4a05-a108-e46fa25cd3ea)
 
@@ -119,7 +119,7 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 |  18439 |    **1000** |          **4** |         **1e-04** |  **0.81229** |   **0.0618** |   **0.6841** |    **0.111** |
 
 
-Experiments link on ![Comet](https://www.comet.com/youssefaboelwafa/retina-blood-vessel-segmentation/view/new/panels)
+Experiments link on [Comet](https://www.comet.com/youssefaboelwafa/retina-blood-vessel-segmentation/view/new/panels)
 
 Number of GPUs used in the training is 2 GPUs
 
