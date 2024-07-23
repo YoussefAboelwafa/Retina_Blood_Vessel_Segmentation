@@ -3,6 +3,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 import albumentations as A
 from utils import *
+from config import *
 from dataset import RetinaDataset
 from model import UNet
 import segmentation_models_pytorch as smp
@@ -11,12 +12,10 @@ set_seed()
 
 EXP_ID = 18808
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-BASE_DIRECTORY = "dataset"
 MODEL_PATH = f"/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_{EXP_ID}.pth"
 
-model = UNet(in_channels=3, out_channels=1).to(device)
+
+model = UNet(in_channels=3, out_channels=1).to(DEVICE)
 model.load_state_dict(torch.load(MODEL_PATH))
 criterion = nn.BCEWithLogitsLoss()
 model.eval()
@@ -36,8 +35,8 @@ test_loss = []
 test_iou_score = []
 
 for i, (image, mask) in enumerate(test_dataloader):
-    image = image.to(device)
-    mask = mask.to(device)
+    image = image.to(DEVICE)
+    mask = mask.to(DEVICE)
 
     with torch.no_grad():
         pred = model(image)
