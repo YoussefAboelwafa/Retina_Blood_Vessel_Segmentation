@@ -4,3 +4,4 @@ __pycache__
 checkpoints
 metrics
 lightning_logs
+retina-blood-vessel-segmentation
