@@ -4,7 +4,7 @@ from torch.utils.data import DataLoader
 import albumentations as A
 from utils import *
 from dataset import RetinaDataset
-from model import UNet
+from model import LitUnet
 import segmentation_models_pytorch as smp
 
 set_seed(5)
@@ -16,7 +16,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 BASE_DIRECTORY = "dataset"
 MODEL_PATH = f"/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint_{EXP_ID}.pth"
 
-model = UNet(in_channels=3, out_channels=1).to(device)
+model = LitUnet(in_channels=3, out_channels=1).to(device)
 model.load_state_dict(torch.load(MODEL_PATH))
 criterion = nn.BCEWithLogitsLoss()
 model.eval()

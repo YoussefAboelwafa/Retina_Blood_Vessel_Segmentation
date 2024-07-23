@@ -10,7 +10,7 @@ class LitUnet(pl.LightningModule):
 
         self.learning_rate = learning_rate
         self.criterion = nn.BCEWithLogitsLoss()
-        
+
         self.enc1 = self.conv_block(in_channels, 64)
         self.enc2 = self.conv_block(64, 128)
         self.enc3 = self.conv_block(128, 256)
@@ -30,7 +30,6 @@ class LitUnet(pl.LightningModule):
         self.dec4 = self.conv_block(128, 64)
 
         self.out = nn.Conv2d(64, out_channels, kernel_size=1)
-
 
     def conv_block(self, in_channels, out_channels):
         return nn.Sequential(
@@ -67,6 +66,9 @@ class LitUnet(pl.LightningModule):
         x = self.out(x)
         return x
 
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
+
     def common_step(self, batch, batch_idx):
         image, mask = batch
         pred = self.forward(image)
@@ -79,19 +81,45 @@ class LitUnet(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         loss, iou_score = self.common_step(batch, batch_idx)
-        self.log_dict({'train_loss': loss, 'train_iou_score': iou_score})
+        self.log(
+            "train_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True
+        )
+        self.log(
+            "train_iou",
+            iou_score,
+            on_step=False,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
         return loss
-    
+
     def validation_step(self, batch, batch_idx):
         loss, iou_score = self.common_step(batch, batch_idx)
-        self.log_dict({'val_loss': loss, 'val_iou_score': iou_score})
+        self.log(
+            "val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True
+        )
+        self.log(
+            "val_iou",
+            iou_score,
+            on_step=False,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
         return loss
 
     def test_step(self, batch, batch_idx):
         loss, iou_score = self.common_step(batch, batch_idx)
-        self.log_dict({'test_loss': loss, 'test_iou_score': iou_score})
+        self.log(
+            "test_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True
+        )
+        self.log(
+            "test_iou",
+            iou_score,
+            on_step=False,
+            on_epoch=True,
+            prog_bar=True,
+            logger=True,
+        )
         return loss
-
-    def configure_optimizers(self):
-        return torch.optim.Adam(self.parameters(), lr=self.learning_rate)
-
