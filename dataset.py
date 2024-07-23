@@ -2,7 +2,6 @@ import numpy as np
 from torch.utils.data import Dataset
 import cv2 as cv
 from torchvision.transforms import ToTensor
-from torchvision.transforms import Normalize
 
 
 class RetinaDataset(Dataset):
@@ -10,7 +9,6 @@ class RetinaDataset(Dataset):
         self.images = images
         self.masks = masks
         self.to_tensor = ToTensor()
-        self.normalize = Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.transform = transform
 
     def __len__(self):
