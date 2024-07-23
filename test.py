@@ -7,9 +7,9 @@ from dataset import RetinaDataset
 from model import UNet
 import segmentation_models_pytorch as smp
 
-set_seed(5)
+set_seed()
 
-EXP_ID = 18439
+EXP_ID = 18749
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

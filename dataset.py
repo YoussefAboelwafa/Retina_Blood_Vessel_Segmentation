@@ -2,15 +2,15 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 import cv2 as cv
-import albumentations as A
+from torchvision.transforms import ToTensor
 
 
 class RetinaDataset(Dataset):
     def __init__(self, images, masks, transform=None):
         self.images = images
         self.masks = masks
+        self.to_tensor = ToTensor()
         self.transform = transform
-        
 
     def __len__(self):
         return len(self.images)
@@ -25,14 +25,11 @@ class RetinaDataset(Dataset):
         mask[mask > 0] = 1
         mask = mask.astype(np.float32)
 
+        image_tensor = self.to_tensor(image)
+        mask_tensor = self.to_tensor(mask)
+
         if self.transform:
-            augmented = self.transform(image=image, mask=mask)
-            image, mask = augmented["image"], augmented["mask"]
-
-        image = np.transpose(image, (2, 0, 1))
-        image_tensor = torch.from_numpy(image)
-
-        mask_tensor = torch.from_numpy(mask)
-        mask_tensor = mask_tensor.unsqueeze(0)
+            augmented = self.transform(image=image_tensor, mask=mask_tensor)
+            image_tensor, mask_tensor = augmented["image"], augmented["mask"]
 
         return image_tensor, mask_tensor
