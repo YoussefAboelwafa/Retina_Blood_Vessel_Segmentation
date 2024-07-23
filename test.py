@@ -9,7 +9,7 @@ import segmentation_models_pytorch as smp
 
 set_seed()
 
-EXP_ID = 18749
+EXP_ID = 18808
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
