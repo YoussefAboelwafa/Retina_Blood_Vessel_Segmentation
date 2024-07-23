@@ -5,21 +5,28 @@ from torch.utils.data import Dataset, DataLoader
 import cv2 as cv
 import pytorch_lightning as pl
 from sklearn.model_selection import train_test_split
+from torchvision.transforms import ToTensor
 
 
 class RetinaDataset(Dataset):
     def __init__(self, images, masks, transform=None):
         self.images = images
         self.masks = masks
+        self.to_tensor = ToTensor()
         self.transform = transform
 
     def __len__(self):
         return len(self.images)
 
     def __getitem__(self, idx):
+        
         image = cv.imread(self.images[idx], cv.IMREAD_COLOR)
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-        image = image / 255.0
+        
+        mean = image.mean(axis=(0, 1))
+        std = image.std(axis=(0, 1))
+        image = (image - mean[None, None, :]) / std[None, None, :]
+        # image = image / 255.0
         image = image.astype(np.float32)
 
         mask = cv.imread(self.masks[idx], cv.IMREAD_GRAYSCALE)
@@ -30,11 +37,8 @@ class RetinaDataset(Dataset):
             augmented = self.transform(image=image, mask=mask)
             image, mask = augmented["image"], augmented["mask"]
 
-        image = np.transpose(image, (2, 0, 1))
-        image_tensor = torch.from_numpy(image)
-
-        mask_tensor = torch.from_numpy(mask)
-        mask_tensor = mask_tensor.unsqueeze(0)
+        image_tensor = self.to_tensor(image)
+        mask_tensor = self.to_tensor(mask)
 
         return image_tensor, mask_tensor
 
