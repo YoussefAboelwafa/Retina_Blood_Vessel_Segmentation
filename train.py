@@ -6,33 +6,12 @@ from dataset import RetinaDataset
 import albumentations as A
 from torch.utils.data import DataLoader
 from utils import *
+from config import *
 from sklearn.model_selection import train_test_split
-import warnings
 import segmentation_models_pytorch as smp
 from datetime import datetime
-import argparse
 
-warnings.filterwarnings("ignore")
-set_seed(5)
-
-parser = argparse.ArgumentParser()
-parser.add_argument("--epochs", type=int, default=200)
-parser.add_argument("--lr", type=float, default=0.0001)
-parser.add_argument("--batch_size", type=int, default=4)
-parser.add_argument("--job_id", type=int)
-
-args = parser.parse_args()
-
-EPOCHS = args.epochs
-LR = args.lr
-BATCH_SIZE = args.batch_size
-
-IN_CHANNELS = 3
-OUT_CHANNELS = 1
-
-BASE_DIRECTORY = "dataset"
-
-CHECKPOINT_PATH = "/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint"
+set_seed()
 
 experiment = Experiment(
     api_key="rwyMmTQC0QDIH0oF5XaSzgmh4",
@@ -42,7 +21,6 @@ experiment = Experiment(
 
 experiment.set_name(str(args.job_id))
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 images, masks, _, _ = load_data(BASE_DIRECTORY)
 
@@ -79,7 +57,7 @@ if torch.cuda.device_count() > 1:
     print(f"start training using {torch.cuda.device_count()} GPUs")
     model = torch.nn.DataParallel(model)
 
-model.to(device)
+model.to(DEVICE)
 
 best_iou = float("-inf")
 
@@ -102,8 +80,8 @@ for epoch in range(EPOCHS):
     train_iou_score = []
 
     for batch_idx, (image, mask) in enumerate(train_dataloader):
-        image = image.to(device=device)
-        mask = mask.to(device=device)
+        image = image.to(device=DEVICE)
+        mask = mask.to(device=DEVICE)
         optimizer.zero_grad()
         pred = model(image)
         loss = criterion(pred, mask)
@@ -130,8 +108,8 @@ for epoch in range(EPOCHS):
 
     with torch.no_grad():
         for i, (image, mask) in enumerate(val_dataloader):
-            image = image.to(device=device)
-            mask = mask.float().to(device=device)
+            image = image.to(device=DEVICE)
+            mask = mask.float().to(device=DEVICE)
             pred = model(image)
             loss = criterion(pred, mask)
             pred = torch.sigmoid(pred)
