@@ -27,9 +27,7 @@ class RetinaDataset(Dataset):
 
         mask = cv.imread(self.masks[idx], cv.IMREAD_GRAYSCALE)
         mask[mask > 0] = 1
-        mask = mask.astype(np.float32)
-
-        
+        mask = mask.astype(np.float32) 
 
         if self.transform:
             augmented = self.transform(image=image, mask=mask)
