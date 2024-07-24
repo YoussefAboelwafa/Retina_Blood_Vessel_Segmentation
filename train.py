@@ -5,7 +5,7 @@ from model import LitUnet
 from dataset import RetinaDataModule
 import pytorch_lightning as pl
 import albumentations as A
-from pytorch_lightning.callbacks import ModelCheckpoint
+from pytorch_lightning.callbacks import ModelCheckpoint, EarlyStopping
 
 set_seed()
 
@@ -28,7 +28,17 @@ train_transform = A.Compose(
 )
 
 
-checkpoint_callback = ModelCheckpoint(
+class CustomModelCheckpoint(ModelCheckpoint):
+    def on_save_checkpoint(self, trainer, pl_module, checkpoint):
+        super().on_save_checkpoint(trainer, pl_module, checkpoint)
+        val_iou = trainer.callback_metrics.get("val_iou", "Metric not found")
+        val_loss = trainer.callback_metrics.get("val_loss", "Metric not found")
+        print(f"Checkpoint saved with val_iou: {val_iou}")
+        print(f"Checkpoint saved with val_loss: {val_loss}")
+        print("-" * 50)
+
+
+checkpoint_callback = CustomModelCheckpoint(
     monitor="val_iou",
     dirpath="checkpoints/",
     filename=f"lightning_{args.job_id}",
@@ -36,6 +46,13 @@ checkpoint_callback = ModelCheckpoint(
     mode="max",
 )
 
+early_stopping = EarlyStopping(
+    monitor="val_iou",
+    min_delta=0.00,
+    verbose=True,
+    patience=20,
+    mode="max",
+)
 
 if __name__ == "__main__":
     model = LitUnet(
@@ -55,6 +72,6 @@ if __name__ == "__main__":
         devices=GPUS,
         enable_progress_bar=False,
         logger=comet_logger,
-        callbacks=[checkpoint_callback],
+        callbacks=[checkpoint_callback, early_stopping],
     )
     trainer.fit(model, dm)
