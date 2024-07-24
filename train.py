@@ -27,16 +27,12 @@ train_transform = A.Compose(
     ]
 )
 
-test_transform = A.Compose(
-    [
-        A.Resize(512, 512),
-    ]
-)
 
 checkpoint_callback = ModelCheckpoint(
     monitor="val_iou",
     dirpath="checkpoints/",
     filename=f"lightning_{args.job_id}",
+    save_top_k=1,
     mode="max",
 )
 
@@ -49,7 +45,7 @@ if __name__ == "__main__":
     dm = RetinaDataModule(
         BASE_DIRECTORY,
         train_transform=train_transform,
-        test_transform=test_transform,
+        test_transform=None,
         batch_size=BATCH_SIZE,
     )
     trainer = pl.Trainer(
