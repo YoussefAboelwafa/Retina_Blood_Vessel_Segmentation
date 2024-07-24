@@ -22,6 +22,5 @@ IN_CHANNELS = 3
 OUT_CHANNELS = 1
 
 BASE_DIRECTORY = "dataset"
-CHECKPOINT_PATH = "/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/checkpoint"
 
 ACCELERATOR = "gpu" if torch.cuda.is_available() else "cpu"
