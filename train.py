@@ -5,7 +5,7 @@ from model import LitUnet
 from dataset import RetinaDataModule
 import pytorch_lightning as pl
 import albumentations as A
-from callbacks import *
+from pytorch_lightning.callbacks import ModelCheckpoint
 
 set_seed()
 
@@ -33,6 +33,14 @@ test_transform = A.Compose(
     ]
 )
 
+checkpoint_callback = ModelCheckpoint(
+    monitor="val_iou",
+    dirpath="checkpoints/",
+    filename=f"lightning_{args.job_id}",
+    mode="max",
+)
+
+
 if __name__ == "__main__":
     model = LitUnet(
         in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS, learning_rate=LR
@@ -54,5 +62,3 @@ if __name__ == "__main__":
         callbacks=[checkpoint_callback],
     )
     trainer.fit(model, dm)
-    trainer.validate(model, dm.val_dataloader())
-    trainer.test(model, dm.test_dataloader())
