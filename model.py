@@ -31,6 +31,14 @@ class LitUnet(pl.LightningModule):
 
         self.out = nn.Conv2d(64, out_channels, kernel_size=1)
 
+        self.train_loss_sum = 0.0
+        self.train_iou_sum = 0.0
+        self.train_batches = 0
+        
+        self.val_loss_sum = 0.0
+        self.val_iou_sum = 0.0
+        self.val_batches = 0
+
     def conv_block(self, in_channels, out_channels):
         return nn.Sequential(
             nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
@@ -75,39 +83,42 @@ class LitUnet(pl.LightningModule):
         loss = self.criterion(pred, mask)
         pred = torch.sigmoid(pred)
         mask = mask.round().long()
-        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5) # type: ignore
+        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5)  # type: ignore
         iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro").item()
         return loss, iou_score
 
     def training_step(self, batch, batch_idx):
         loss, iou_score = self.common_step(batch, batch_idx)
-        self.log(
-            "train_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True
-        )
-        self.log(
-            "train_iou",
-            iou_score,
-            on_step=False,
-            on_epoch=True,
-            prog_bar=True,
-            logger=True,
-        )
+        self.train_loss_sum += loss
+        self.train_iou_sum += iou_score
+        self.train_batches += 1
         return loss
 
+    def on_train_epoch_end(self):
+        avg_train_loss = self.train_loss_sum / self.train_batches
+        avg_train_iou = self.train_iou_sum / self.train_batches
+        self.log('train_iou', avg_train_iou, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss', avg_train_loss, on_epoch=True, prog_bar=True, logger=True)
+        self.train_loss_sum = 0.0
+        self.train_iou_sum = 0.0
+        self.train_batches = 0
+        
+        
     def validation_step(self, batch, batch_idx):
         loss, iou_score = self.common_step(batch, batch_idx)
-        self.log(
-            "val_loss", loss, on_step=False, on_epoch=True, prog_bar=True, logger=True
-        )
-        self.log(
-            "val_iou",
-            iou_score,
-            on_step=False,
-            on_epoch=True,
-            prog_bar=True,
-            logger=True,
-        )
+        self.val_loss_sum += loss
+        self.val_iou_sum += iou_score
+        self.val_batches += 1
         return loss
+    
+    def on_validation_epoch_end(self):
+        avg_val_loss = self.val_loss_sum / self.val_batches
+        avg_val_iou = self.val_iou_sum / self.val_batches
+        self.log('val_iou', avg_val_iou, on_epoch=True, prog_bar=True, logger=True)
+        self.log('val_loss', avg_val_loss, on_epoch=True, prog_bar=True, logger=True)
+        self.val_loss_sum = 0.0
+        self.val_iou_sum = 0.0
+        self.val_batches = 0  
 
     def test_step(self, batch, batch_idx):
         loss, iou_score = self.common_step(batch, batch_idx)
