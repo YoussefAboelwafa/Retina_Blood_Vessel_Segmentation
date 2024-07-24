@@ -89,7 +89,7 @@ for epoch in range(EPOCHS):
         optimizer.step()
         pred = torch.sigmoid(pred)
         mask = mask.round().long()
-        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5)
+        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5) # type: ignore
         iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro").item()
         train_loss.append(loss.item())
         train_iou_score.append(iou_score)
@@ -115,7 +115,7 @@ for epoch in range(EPOCHS):
             pred = torch.sigmoid(pred)
             mask = mask.round().long()
             tp, fp, fn, tn = smp.metrics.get_stats(
-                pred, mask, mode="binary", threshold=0.5
+                pred, mask, mode="binary", threshold=0.5 # type: ignore
             )
             iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro").item()
             val_loss.append(loss.item())

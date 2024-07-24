@@ -43,7 +43,7 @@ for i, (image, mask) in enumerate(test_dataloader):
         loss = criterion(pred, mask)
         pred = torch.sigmoid(pred)
         mask = mask.round().long()
-        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5)
+        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5) # type: ignore
         iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro").item()
         test_loss.append(loss.item())
         test_iou_score.append(iou_score)
