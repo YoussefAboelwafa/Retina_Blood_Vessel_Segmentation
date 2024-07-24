@@ -36,6 +36,17 @@ class CustomModelCheckpoint(ModelCheckpoint):
         print(f"Checkpoint saved with val_iou: {val_iou}")
         print(f"Checkpoint saved with val_loss: {val_loss}")
         print("-" * 50)
+        
+    def on_train_end(self, trainer, pl_module):
+        super().on_train_end(trainer, pl_module)
+        if trainer.interrupted:
+            print("*" * 50)
+            print("Training was interrupted by a callback.")
+            print("*" * 50)
+        else:
+            print("*" * 50)
+            print("Training Ended Successfully")
+            print("*" * 50)
 
 
 checkpoint_callback = CustomModelCheckpoint(
@@ -50,7 +61,7 @@ early_stopping = EarlyStopping(
     monitor="val_iou",
     min_delta=0.00,
     verbose=True,
-    patience=20,
+    patience=100,
     mode="max",
 )
 
