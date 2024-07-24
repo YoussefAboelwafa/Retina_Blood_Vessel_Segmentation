@@ -20,7 +20,6 @@ class RetinaDataset(Dataset):
         mean = image.mean(axis=(0, 1))
         std = image.std(axis=(0, 1))
         image = (image - mean[None, None, :]) / std[None, None, :]
-        # image = image / 255.0
         image = image.astype(np.float32)
 
         mask = cv.imread(self.masks[idx], cv.IMREAD_GRAYSCALE)
