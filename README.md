@@ -4,7 +4,7 @@
 - The project involves using a dataset of 100 high-resolution retinal fundus images for blood vessel segmentation to aid in early detection of retinal pathologies.
 - Implemented **U-Net architecture** from scratch, known for its efficiency in semantic segmentation with limited data.
 - Hyperparameter tuning is applied using **parallelism with multiple GPUs** to efficiently handle the computational demands.
-- The final model achieved **72%** IoU score on validation set and **68%** on test set.
+- The final model achieved **86%** IoU score on validation set and **70%** on test set.
 - **Data augmentation** techniques were applied to the training dataset to enhance model robustness and generalization by artificially expanding the diversity of training samples.
 - Going modular with a series of different python scripts for more reproducibility using pytorch lightning for simplified codebase, scalability, and advanced features.
 
@@ -116,12 +116,12 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 |  17941 |    300 |          4 |         1e-04 |  0.6126 |   0.1551 |        - |         - |
 |  17942 |    300 |          4 |         5e-05 |  0.5701 |   0.1618 |        - |         - |
 |  18049 |    400 |          4 |         1e-04 |  0.7242 |   0.0961 |   0.6827 |    0.1307 |
-|  18439 |    **1000** |          **4** |         **1e-04** |  **0.81229** |   **0.0618** |   **0.6841** |    **0.111** |
+|  18808 |    **1000** |          **4** |         **1e-04** |  **0.8609** |   **0.0454** |   **0.701** |    **0.1881** |
 
 
 Experiments link on [Comet](https://www.comet.com/youssefaboelwafa/retina-blood-vessel-segmentation/view/new/panels)
 
-Number of GPUs used in the training is 2 GPUs
+Number of GPUs used in the training is 4 GPUs
 
 The best hyperparameters for my training after multiple experiments are:
 
@@ -132,10 +132,10 @@ The best hyperparameters for my training after multiple experiments are:
 
 <br>
 
-At epoch **959** the model has the best performance with: <br>
+At epoch **992** the model has the best performance with: <br>
 
-- **IoU score = 0.8129** <br>
-- **validation loss = 0.0618** <br>
+- **IoU score = 0.8609** <br>
+- **validation loss = 0.0454** <br>
 
 The model is saved to disk for future use.
 
