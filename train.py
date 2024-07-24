@@ -5,6 +5,7 @@ from model import LitUnet
 from dataset import RetinaDataModule
 import pytorch_lightning as pl
 import albumentations as A
+from callbacks import *
 
 set_seed()
 
@@ -12,7 +13,7 @@ comet_logger = CometLogger(
     api_key="rwyMmTQC0QDIH0oF5XaSzgmh4",
     project_name="retina-blood-vessel-segmentation",
     workspace="youssefaboelwafa",
-    experiment_name= str(args.job_id),
+    experiment_name=str(args.job_id),
 )
 
 train_transform = A.Compose(
@@ -36,9 +37,22 @@ if __name__ == "__main__":
     model = LitUnet(
         in_channels=IN_CHANNELS, out_channels=OUT_CHANNELS, learning_rate=LR
     )
-    
-    dm = RetinaDataModule(BASE_DIRECTORY,train_transform = train_transform, test_transform = test_transform, batch_size=BATCH_SIZE)
-    trainer = pl.Trainer(max_epochs=EPOCHS, accelerator=ACCELERATOR, devices=GPUS, enable_progress_bar=False, logger = comet_logger)
+
+    dm = RetinaDataModule(
+        BASE_DIRECTORY,
+        train_transform=train_transform,
+        test_transform=test_transform,
+        batch_size=BATCH_SIZE,
+    )
+    trainer = pl.Trainer(
+        strategy="ddp",
+        max_epochs=EPOCHS,
+        accelerator=ACCELERATOR,
+        devices=GPUS,
+        enable_progress_bar=False,
+        logger=comet_logger,
+        callbacks=[checkpoint_callback],
+    )
     trainer.fit(model, dm)
     trainer.validate(model, dm.val_dataloader())
     trainer.test(model, dm.test_dataloader())
