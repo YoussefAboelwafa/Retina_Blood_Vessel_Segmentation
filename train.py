@@ -33,6 +33,7 @@ class CustomModelCheckpoint(ModelCheckpoint):
         super().on_save_checkpoint(trainer, pl_module, checkpoint)
         val_iou = trainer.callback_metrics.get("val_iou", "Metric not found")
         val_loss = trainer.callback_metrics.get("val_loss", "Metric not found")
+        print("Epoch:", trainer.current_epoch)
         print(f"Checkpoint saved with val_iou: {val_iou}")
         print(f"Checkpoint saved with val_loss: {val_loss}")
         print("-" * 50)
@@ -61,7 +62,7 @@ early_stopping = EarlyStopping(
     monitor="val_iou",
     min_delta=0.00,
     verbose=True,
-    patience=100,
+    patience=50,
     mode="max",
 )
 
