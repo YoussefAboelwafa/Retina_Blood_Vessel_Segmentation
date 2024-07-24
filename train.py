@@ -41,7 +41,7 @@ class CustomModelCheckpoint(ModelCheckpoint):
         super().on_train_end(trainer, pl_module)
         if trainer.interrupted:
             print("*" * 50)
-            print("Training was interrupted by a callback.")
+            print("Training was interrupted by a callback")
             print("*" * 50)
         else:
             print("*" * 50)
