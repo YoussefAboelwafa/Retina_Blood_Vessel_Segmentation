@@ -7,7 +7,7 @@ import albumentations as A
 
 set_seed()
 
-EXP_ID = 19103
+EXP_ID = 19120
 
 model = LitUnet.load_from_checkpoint(
     checkpoint_path= f"/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/lightning_{EXP_ID}.ckpt",
