@@ -106,6 +106,8 @@ U-Net is widely used in semantic segmentation because it excels at capturing fin
 
 ## Hyperparameters:
 
+Hyperparameters are passed using the **command line arguments (argparse)** to the training script.
+
 | Job id | epochs | batch_size | learning_rate | val_IoU | val_loss | test_IoU | test_loss |
 | -----: | -----: | ---------: | ------------: | ------: | -------: | -------: | --------: |
 |  17855 |    100 |          4 |         1e-04 |  0.6163 |   0.1475 |        - |         - |
