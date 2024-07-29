@@ -1,20 +1,23 @@
 import torch
 import argparse
 import warnings
+import json
+import os
 
 warnings.filterwarnings("ignore")
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--epochs", type=int, default=200)
-parser.add_argument("--lr", type=float, default=0.0001)
-parser.add_argument("--batch_size", type=int, default=4)
-parser.add_argument("--job_id", type=int)
+parser.add_argument("-c", "--config", type=str, default="config.json")
 args = parser.parse_args()
 
+with open(args.config, "r") as file:
+    config = json.load(file)
 
-EPOCHS = args.epochs
-LR = args.lr
-BATCH_SIZE = args.batch_size
+
+EPOCHS = config["epochs"]
+LR = config["learning_rate"]
+BATCH_SIZE = config["batch_size"]
+JOB_ID = os.getenv("SLURM_JOB_ID", "0")
 
 GPUS = torch.cuda.device_count() if torch.cuda.is_available() else 0
 

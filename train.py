@@ -13,7 +13,7 @@ comet_logger = CometLogger(
     api_key="rwyMmTQC0QDIH0oF5XaSzgmh4",
     project_name="retina-blood-vessel-segmentation",
     workspace="youssefaboelwafa",
-    experiment_name=str(args.job_id),
+    experiment_name=str(JOB_ID),
 )
 
 train_transform = A.Compose(

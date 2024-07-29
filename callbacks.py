@@ -26,7 +26,7 @@ class CustomModelCheckpoint(ModelCheckpoint):
 checkpoint_callback = CustomModelCheckpoint(
     monitor="val_iou",
     dirpath="checkpoints/",
-    filename=f"lightning_{args.job_id}",
+    filename=f"lightning_{JOB_ID}",
     save_top_k=1,
     mode="max",
 )
@@ -34,7 +34,6 @@ checkpoint_callback = CustomModelCheckpoint(
 early_stopping = EarlyStopping(
     monitor="val_iou",
     min_delta=0.00,
-    verbose=True,
     patience=50,
     mode="max",
 )
