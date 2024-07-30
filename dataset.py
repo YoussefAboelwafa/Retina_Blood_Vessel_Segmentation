@@ -19,10 +19,10 @@ class RetinaDataset(Dataset):
         return len(self.images)
 
     def __getitem__(self, idx):
-        
+
         image = cv.imread(self.images[idx], cv.IMREAD_COLOR)
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
-        
+
         mean = image.mean(axis=(0, 1))
         std = image.std(axis=(0, 1))
         image = (image - mean[None, None, :]) / std[None, None, :]
@@ -53,17 +53,16 @@ class RetinaDataModule(pl.LightningDataModule):
         self.batch_size = batch_size
 
     def setup(self, stage=None):
-        if stage == "fit" or stage is None:
-            train_images, val_images, train_masks, val_masks = train_test_split(
-                self.train_images, self.train_masks, test_size=0.25, random_state=5
-            )
+        train_images, val_images, train_masks, val_masks = train_test_split(
+            self.train_images, self.train_masks, test_size=0.25, random_state=5
+        )
 
-            self.train_dataset = RetinaDataset(
-                train_images, train_masks, transform=self.train_transform
-            )
-            self.val_dataset = RetinaDataset(
-                val_images, val_masks, transform=self.test_transform
-            )
+        self.train_dataset = RetinaDataset(
+            train_images, train_masks, transform=self.train_transform
+        )
+        self.val_dataset = RetinaDataset(
+            val_images, val_masks, transform=self.test_transform
+        )
 
         self.test_dataset = RetinaDataset(
             self.test_images, self.test_masks, transform=self.test_transform
