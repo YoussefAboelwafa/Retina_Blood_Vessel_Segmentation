@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import pytorch_lightning as pl
 import segmentation_models_pytorch as smp
+from config import *
 
 
 class LitUnet(pl.LightningModule):
@@ -83,7 +84,7 @@ class LitUnet(pl.LightningModule):
         loss = self.criterion(pred, mask)
         pred = torch.sigmoid(pred)
         mask = mask.round().long()
-        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=0.5)  # type: ignore
+        tp, fp, fn, tn = smp.metrics.get_stats(pred, mask, mode="binary", threshold=THRESHOLD)  # type: ignore
         iou_score = smp.metrics.iou_score(tp, fp, fn, tn, reduction="micro").item()
         return loss, iou_score
 

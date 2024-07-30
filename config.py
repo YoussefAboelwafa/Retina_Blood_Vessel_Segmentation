@@ -17,6 +17,7 @@ with open(args.config, "r") as file:
 EPOCHS = config["epochs"]
 LR = config["learning_rate"]
 BATCH_SIZE = config["batch_size"]
+THRESHOLD = config["threshold"]
 JOB_ID = os.getenv("SLURM_JOB_ID", "0")
 
 GPUS = torch.cuda.device_count() if torch.cuda.is_available() else 0
