@@ -1,6 +1,7 @@
 import torch
 import argparse
 import warnings
+import os
 
 warnings.filterwarnings("ignore")
 
@@ -8,7 +9,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--epochs", type=int, default=200)
 parser.add_argument("--lr", type=float, default=0.0001)
 parser.add_argument("--batch_size", type=int, default=4)
-parser.add_argument("--job_id", type=int)
+parser.add_argument("--job_id", type=int, default= os.getenv("SLURM_JOB_ID"))
 args = parser.parse_args()
 
 
