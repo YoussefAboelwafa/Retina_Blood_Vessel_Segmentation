@@ -12,7 +12,7 @@ set_seed()
 
 EXP_ID = 18808
 
-MODEL_PATH = f"/scratch/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/pytorch_{EXP_ID}.pth"
+MODEL_PATH = f"/scratch/dr/y.aboelwafa/Retina/Retina_Blood_Vessel_Segmentation/checkpoints/pytorch_{EXP_ID}.pth"
 
 
 model = UNet(in_channels=3, out_channels=1).to(DEVICE)
