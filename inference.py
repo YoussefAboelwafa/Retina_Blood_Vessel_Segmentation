@@ -19,9 +19,7 @@ OUTPUT_DIR = "/scratch/dr/y.aboelwafa/DR/diabetic-retinopathy/datasets/masks"
 
 TRAIN_CSV = "/scratch/dr/y.aboelwafa/DR/diabetic-retinopathy/datasets/kaggle_train.csv"
 VAL_CSV = "/scratch/dr/y.aboelwafa/DR/diabetic-retinopathy/datasets/kaggle_val.csv"
-TEST_CSV = (
-    "/scratch/dr/y.aboelwafa/DR/diabetic-retinopathy/datasets/kaggle_test_public.csv"
-)
+TEST_CSV = "/scratch/dr/y.aboelwafa/DR/diabetic-retinopathy/datasets/kaggle_test.csv"
 
 train_df = pd.read_csv(TRAIN_CSV)
 val_df = pd.read_csv(VAL_CSV)
