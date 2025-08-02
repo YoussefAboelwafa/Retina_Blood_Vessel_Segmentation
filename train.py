@@ -14,7 +14,7 @@ from datetime import datetime
 set_seed()
 
 experiment = Experiment(
-    api_key="rwyMmTQC0QDIH0oF5XaSzgmh4",
+    api_key="***********************",
     project_name="retina-blood-vessel-segmentation",
     workspace="youssefaboelwafa",
 )
