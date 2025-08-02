@@ -10,7 +10,7 @@ import albumentations as A
 set_seed()
 
 comet_logger = CometLogger(
-    api_key="rwyMmTQC0QDIH0oF5XaSzgmh4",
+    api_key="***********************",
     project_name="retina-blood-vessel-segmentation",
     workspace="youssefaboelwafa",
     experiment_name=str(JOB_ID),
